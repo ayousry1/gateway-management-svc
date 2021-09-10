@@ -13,6 +13,6 @@ public class GatewayEntity {
     private String serialNumber;
     private String name;
     private String ip4Address;
-    @OneToMany(mappedBy = "gateway",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "gateway", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeviceEntity> peripheralDevices;
 }

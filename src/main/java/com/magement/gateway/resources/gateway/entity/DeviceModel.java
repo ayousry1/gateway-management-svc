@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class DeviceModel {
-    private long UID;
+    private int UID;
     private String vendor;
     private LocalDateTime dateCreated;
     private DeviceStatus status;

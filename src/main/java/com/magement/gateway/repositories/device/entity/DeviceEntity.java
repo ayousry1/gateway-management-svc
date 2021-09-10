@@ -11,13 +11,11 @@ import java.time.LocalDateTime;
 @Entity(name = "device")
 public class DeviceEntity {
     @Id
-    private long UID;
+    private int UID;
     private String vendor;
     private LocalDateTime dateCreated;
     private DeviceStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="serialNumber", nullable=false)
-    @JoinColumn(name = "serialNumber")
+    @ManyToOne
     private GatewayEntity gateway;
 }
