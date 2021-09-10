@@ -1,5 +1,6 @@
 package com.magement.gateway.common;
 
+import com.magement.gateway.common.exceptions.GatewayNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -18,8 +19,12 @@ public class ErrorAdvice {
         for (ObjectError error : exception.getBindingResult().getAllErrors()) {
             errors.add(error.getDefaultMessage());
         }
-        ResponseMessage msg = new ResponseMessage(errors.toString().replace("[", "")
-                .replace("]", ""));
-        return new ResponseEntity<>(msg, null, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(errors.toString().
+                replace("[", "").replace("]", "")));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ResponseMessage> handle(GatewayNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(e.getMessage()));
     }
 }
