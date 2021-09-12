@@ -78,10 +78,12 @@ public class GatewayResource {
                                                   @PathVariable("uid") @NotEmpty int uid) {
         Optional<GatewayEntity> gatewayEntity = gatewayRepository.findById(serial);
         if (gatewayEntity.isPresent()) {
-            Optional<DeviceEntity> deviceEntity = gatewayEntity.get().getPeripheralDevices().stream()
+            GatewayEntity foundGateway = gatewayEntity.get();
+            Optional<DeviceEntity> deviceEntity = foundGateway.getPeripheralDevices().stream()
                     .filter(element -> element.getUID() == uid).findFirst();
             if (deviceEntity.isPresent()) {
-                deviceRepository.delete(deviceEntity.get());
+                foundGateway.removeChild(deviceEntity.get());
+                gatewayRepository.save(foundGateway);
                 return ResponseEntity.ok().build();
             } else {
                 throw new DeviceNotFoundException(uid);

@@ -15,4 +15,9 @@ public class GatewayEntity {
     private String ip4Address;
     @OneToMany(mappedBy = "gateway", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeviceEntity> peripheralDevices;
+
+    public void removeChild(DeviceEntity child) {
+        peripheralDevices.remove(child);
+        child.setGateway(null);
+    }
 }
