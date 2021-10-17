@@ -2,6 +2,7 @@ package com.magement.gateway.common;
 
 import com.magement.gateway.common.exceptions.DeviceNotFoundException;
 import com.magement.gateway.common.exceptions.GatewayNotFoundException;
+import io.sentry.Sentry;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -26,11 +27,13 @@ public class ErrorAdvice {
 
     @ExceptionHandler
     public ResponseEntity<ResponseMessage> handle(GatewayNotFoundException e) {
+        Sentry.captureException(e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ResponseMessage> handle(DeviceNotFoundException e) {
+        Sentry.captureException(e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(e.getMessage()));
     }
 }
