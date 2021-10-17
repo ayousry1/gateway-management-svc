@@ -9,6 +9,7 @@ import com.magement.gateway.repositories.gateway.entity.GatewayEntity;
 import com.magement.gateway.resources.gateway.control.GatewayResourceCtrl;
 import com.magement.gateway.resources.gateway.entity.DeviceModel;
 import com.magement.gateway.resources.gateway.entity.GatewayModel;
+import io.sentry.spring.tracing.SentrySpan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,7 @@ public class GatewayResource {
     }
 
     @GetMapping
+    @SentrySpan
     public ResponseEntity<List<GatewayModel>> getAllGateways() {
         List<GatewayEntity> gatewayEntities = new ArrayList<>();
         gatewayRepository.findAll().forEach(gatewayEntities::add);
@@ -44,12 +46,14 @@ public class GatewayResource {
     }
 
     @PostMapping
+    @SentrySpan
     public ResponseEntity addGateway(@RequestBody @Valid GatewayModel body) {
         gatewayRepository.save(gatewayResourceCtrl.getGatewayEntity(body));
         return ResponseEntity.created(URI.create(CONTEXT_ROOT + body.getSerialNumber())).build();
     }
 
     @GetMapping("/{serial}")
+    @SentrySpan
     public ResponseEntity<GatewayModel> getGatewayBySerial(@PathVariable("serial") @NotEmpty String serial) {
         Optional<GatewayEntity> gatewayEntity = gatewayRepository.findById(serial);
         if (gatewayEntity.isPresent()) {
@@ -60,6 +64,7 @@ public class GatewayResource {
     }
 
     @PostMapping("/{serial}/devices")
+    @SentrySpan
     public ResponseEntity addDeviceToGateway(@PathVariable("serial") @NotEmpty String serial,
                                              @RequestBody DeviceModel body) {
         Optional<GatewayEntity> gatewayOptional = gatewayRepository.findById(serial);
@@ -74,6 +79,7 @@ public class GatewayResource {
     }
 
     @DeleteMapping("/{serial}/devices/{uid}")
+    @SentrySpan
     public ResponseEntity removeDeviceFromGateway(@PathVariable("serial") @NotEmpty String serial,
                                                   @PathVariable("uid") @NotEmpty int uid) {
         Optional<GatewayEntity> gatewayEntity = gatewayRepository.findById(serial);
